@@ -6,7 +6,7 @@ These are my solutions to the homeworks and projects assigned in CS 111 in Fall 
 | ------- | ----- |
 | 0 | 100/100  |
 | 1A | 100/100  |
-| 1B | 90/100  |
+| 1B | 100/100  |
 | 1C | 100/100  |
 | 2A | 99/100  |
 | 2B | 100/100  |
