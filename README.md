@@ -4,7 +4,7 @@ These are my solutions to the homeworks and projects assigned in CS 111 in Fall 
 
 | Project | Score |
 | ------- | ----- |
-| 1 | 100/100  |
+| 0 | 100/100  |
 | 1A | 100/100  |
 | 1B | 90/100  |
 | 1C | 100/100  |
