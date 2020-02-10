@@ -1,0 +1,27 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 4a, a lab to setup the beaglebone
+
+Included files:
+  - *.jpg/png
+    Image files as required by the spec including
+    - my_beaglebone.png
+      A selfie with the beaglebone
+    - connected.png
+      network connection and modified name for beaglebone
+    - copy.png
+      using scp to copy hello.c from local to the beaglebone
+    - build_run.png
+      using gcc to generate a hello world program, and running it on the beaglebone
+    - git.png
+      Using git to clone a personal repository down
+
+  - Makefile
+    A makefile that generates the required targets:
+      dist (default) - Creates a tarball for the lab
+      clean - removes the tarball
+
+  - README
+    This file, explaining everything included in the lab distribution

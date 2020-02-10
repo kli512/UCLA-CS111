@@ -1,0 +1,19 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 3b, a lab on file system consistency
+
+Included files:
+  - lab3b.py
+    This is the main solution; Python 3 source code that
+    investigates a file system csv created by lab3a
+
+  - Makefile
+    A makefile that generates the required targets:
+      (default) - Builds the lab3b executable (./lab3b)
+      clean - Deletes files created by the makefile
+      dist - Creates a tarball for the lab
+
+  - README
+    This file, explaining everything included in the lab distribution

@@ -1,0 +1,81 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 0, a lab to check for basic C development skills that
+should have been previously gained in the prerequesites for CS 111.
+
+Included files:
+  - lab0.c
+    This is the main solution; C source code that redirects input and
+    output.
+
+  - Makefile
+    A makefile that generates the required targets:
+      (default) - Builds the lab0 executable
+      check - Runs smoke tests (thorough explanation later in this file)
+      clean - Deletes files created by the makefile
+      dist - Creates a tarball for the lab
+
+  - backtrace.png
+    Shows a segfault and associated stacktrace in gdb, as specified
+
+  - breakpoint.png
+    Shows a breakpoint and varaible inspection in gdb, as specified
+
+  - README
+    This file, explaining everything included in the lab distribution
+
+Smoke tests and Methodology:
+  The idea of the smoke tests is to check if the program works as specified.
+  Each smoke test is included as a target in the makefile, and works as follows:
+    - copy
+      Simply pipes the phrase "I love Eggert and Zhaoxing" to stdin, and makes
+      sure the same phrase is printed to stdout
+
+      Expected output:
+        Copy test exit code CORRECT
+        Files input.txt.tmp and output.txt.tmp are identical
+
+    - redirection
+      Uses the same phrase, but through the flags --input and --output,
+      inspecting the output afterwards
+
+      Expected output:
+        Redirection test exit code CORRECT
+        Files input.txt.tmp and output.txt.tmp are identical
+
+    - segfault
+      Checks to see if a segfault is caused. The exit code is expected to be 139,
+      as the default exit code raised when a program segfaults
+
+      Expected output:
+        (something indicating a segmentation fault)
+        Segfault test exit code CORRECT
+
+    - catch
+      Checks to see if the error handling and catching is working; the exit code is
+      now expected to be 4, as specified
+
+      Expected output:
+        Segmentation fault caught. Exiting...
+        Catch test exit code CORRECT
+
+    - dump
+      Turns on the catch then dump flag; in this case, it is expected that the order
+      is honored, and the program should dump core instead of catching the error. So,
+      the expected exit code is 139
+
+      Expected output (approx the same as segfault target):
+        (something indicating a segmentation fault)
+        Dump test exit code CORRECT
+
+
+Additional notes:
+  For the smoke tests, the lines indicating a segmentation fault in segfault, catch, and dump are
+  going to be printed to stderr, not stdout
+
+  The makefile specifies bash as the shell to test for the smoke tests
+
+  The arbitrary filenames input.txt.tmp and output.txt.tmp are used in the copy and redirection targets.
+  They are deleted afterwards, so be warned if you currently use files with that name in the same directory.

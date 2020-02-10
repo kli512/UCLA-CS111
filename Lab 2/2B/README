@@ -1,0 +1,150 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 2B, a lab to study lock implementations
+
+Included files:
+  - SortedList.h
+    The given header file for SortedList data structure
+
+  - SortedList.c
+    Implementation of the functions defined in SortedList.h
+
+  - lab2_list.c
+    Part 2 of the main solution; C source code that runs
+    synchronization tests through SortedList operations
+
+  - Makefile
+    A makefile that generates the required targets:
+      build - (default) Builds the lab2b executable
+      tests - Runs the many required tests to generate the csv data files
+      graphs - Generates png graphs using included gnuplot scripts
+      dist - Creates a tarball for the lab
+      clean - Deletes files created by the makefile
+  
+  - lab2b_list.csv
+    CSV output for all the required test runs
+
+  - profile.out
+    gprof output looking at where time is spent in a multithreaded
+    run
+  
+  - *.png
+    Required graphs, comparing the following:
+      throughput vs. number of threads for mutex and spin-lock synchronized list operations
+      mean time per mutex wait and mean time per operation for mutex-synchronized list operations
+      successful iterations vs. threads for each synchronization method
+      throughput vs. number of threads for mutex synchronized partitioned lists
+      throughput vs. number of threads for spin-lock-synchronized partitioned lists
+      (as specified in http://web.cs.ucla.edu/classes/fall19/cs111/labs/P2B_contention/ASSIGNMENT/P2B.html)
+
+  - lab2b_list.sh
+    Script that runs numerous tests to investigate scalability of multi-
+    threaded applications using linked lists
+
+  - lab2b_list.gp
+    Gnuplot script that generates the required plots
+
+  - README
+    This file, explaining everything included in the lab distribution
+    and containing answers to the lab questions
+
+Questions:
+  2.3.1)
+    The answer is split into eight cases that answer every part of the question
+
+    One thread, mutex, short list:
+      For this test, it is difficult to know where the time is mostly being spent.
+      With no contention, we simply do mutex operations, then do list operations.
+      The problem is we do not know exactly how expensive mutex operations are, and
+      this would be very difficult to measure.
+
+    One thread, mutex, long list:
+      With a long list, list operations should start to take a long time so even
+      though we still perform the same number of mutex operations per list op,
+      the list ops will take far longer. Thus, most of the time should be spent
+      on list operations.
+
+    One thread, spinlock, short list:
+      Most of the time should be spent on list ops. This is because, without
+      contention, spinlocks have very little overhead (just setting a lock).
+    
+    One thread, spinlock, short list:
+      Same as above; one thread means no contention, and thus very quick
+      spinlock operations.
+
+    Two threads, mutex, short list:
+      We have the same problem as the first test with one thread, mutex, short list.
+      The only difference is that now we have contention; however, when contention
+      occurs with a mutex lock, CPU time is not wasted, as the thread will give up
+      the CPU. Thus, we still do not really know where time is spent.
+    
+    Two threads, mutex, long list:
+      This, like the previous one, mirrors its one thread counterpart. This is
+      because the added contention should not significantly affect CPU time because
+      a mutex lock will cause the thread to give up the CPU, and not spend CPU time
+      waiting for the lock to release.
+      Thus, most of the time will be spent on the long, difficult list operations
+
+    Two threads, spinlock, short list:
+      The spinlock will definitely take a good amount of time; in this case, we can
+      expect the amount of time spent spinning to be approximately half, while
+      list operations take up the other half. This is because whenever one thread
+      is running and has the lock, the other is spinning. Thus, all time spent
+      executing is mirrored with time spent spinning on the other thread (approximately)
+
+    Two threads, spinlock, long list:
+      We would expect the same results as with a short list for the same reason. When
+      one thread is performing the long, difficult list operation the other thread
+      has to wait just as long for the lock to be released. Thus, we'd expect the time
+      to be split fairly evenly between lock operations and list operations
+
+  2.3.2)
+    The vast, vast majority of profiling samples came during the calls to lock_list()
+    This operation is extremely expensive with a large number of threads because
+    that causes contention to increase. As contention increases, more threads have to
+    idly spin, waiting for the spinlock to release.
+
+  2.3.3)
+    Average lock-wait time rises dramatically with the number of threads because
+    only one thread needs to have the lock for the other n-1 thread to have to wait.
+    As threads go up, contention does accordingly and thus so does lock-wait time.
+    All other n-1 waiting threadss contribute to the wait time, so thread 1 having
+    the list for 500ns can mean 23*500ns of waiting if there are 24 threads total.
+
+    The completion time rises less dramatically because it is solely looking at
+    total wall time; no matter how many threads there are and how much time they
+    waste, its all the same as waiting for only one thread. Time still increases,
+    however, because having many threads requires much more overhead of thread
+    creation, joining, and the context switches required for multithreading.
+
+    Wait time per operation can rise past the completion time for the reason I
+    stated at the beginning; since it is a sum of all threads wall time waiting,
+    we can have n-1 thread waiting while one executes. Thus, the sum of wait time
+    rises faster than time passes, as 50ns of true wall time could mean 23*50ns of
+    accumulated thread wait time.
+
+  2.3.4)
+    As the number of lists increases, the amount of contention decreases. This is
+    because we can have upto [NUM LISTS] threads working simultaneously (although
+    they will not necessarily). With more lists to work on, the amount of waiting
+    for locks decreases as threads will not necessarily be blocked if another thread
+    is working, although it might.
+
+    It will continue increasing for a while, then we will start to actually lose
+    performance. To see why, we must look at what changes. With many lists, contention
+    will decrease and eventually drop to almost zero as the number of lists grows far
+    larger than the number of elements (iterations). So, the time saved from preventing
+    contention will only asymptotically decrease. However, we will continue to incur
+    more and more overhead as we are required to build more and more lists.
+
+    The graphs do show a trend similar to that, and it is largely correct. However,
+    it is important to note some of the things that will cause this to be inaccurate.
+    There is a noticable increase in overhead when using many lists, and we have
+    sections that will cause contention regardless of how many lists we have. For
+    example, we check the length of each sublist during the middle of the main 
+    processing loop. Here, we're likely to encounter extra contention that would not
+    exist with a single list solution.
+
+

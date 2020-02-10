@@ -1,0 +1,106 @@
+Total: 871 samples
+     846  97.1%  97.1%      847  97.2% lock_list
+      14   1.6%  98.7%       14   1.6% __strcmp_sse42
+       5   0.6%  99.3%       13   1.5% SortedList_insert
+       4   0.5%  99.8%       10   1.1% SortedList_lookup
+       1   0.1%  99.9%        1   0.1% 0x00007ffec75878e3
+       1   0.1% 100.0%      871 100.0% process_list
+       0   0.0% 100.0%        1   0.1% __GI___clock_gettime
+       0   0.0% 100.0%      871 100.0% __clone
+       0   0.0% 100.0%      871 100.0% start_thread
+ROUTINE ====================== process_list in /w/home.01/cs/ugrad/like/CS111/lab2/b/lab2_list.c
+     1    871 Total samples (flat / cumulative)
+     .      .  114: }
+     .      .  115: 
+     .      .  116: // Processes the lists as specified
+     .      .  117: // Specifically inserts, counts, and removes elements
+     .      .  118: // The sublist used is determined by the above hash function
+---
+     .      .  119: void* process_list(void* t_id) {
+     .      .  120:   int tid = *(int*)t_id;
+     .      .  121:   int li;
+     .      .  122: 
+     .      .  123:   // inserting elements
+     .      .  124:   for (int e = 0; e < iterations; e++) {
+     .      .  125:     li = hash(elements[tid] + e);
+     .    649  126:     lock_list(li);
+     1     14  127:     SortedList_insert(lists + li, (elements[tid]) + e);
+     .      .  128:     unlock_list(li);
+     .      .  129:   }
+     .      .  130: 
+     .      .  131:   // checking length and looking for corruption
+     .      .  132:   for (li = 0; li < nlists; li++){
+     .      3  133:     lock_list(li);
+     .      .  134:     if (SortedList_length(lists + li) < 0)
+     .      .  135:       found_corruption("could not get length");
+     .      .  136:     unlock_list(li);
+     .      .  137:   }
+     .      .  138: 
+     .      .  139:   // looking up and deleting everything that was inserted
+     .      .  140:   for (int e = 0; e < iterations; e++) {
+     .      .  141:     li = hash(elements[tid] + e);
+     .    195  142:     lock_list(li);
+     .      .  143:     SortedListElement_t* element =
+     .     10  144:         SortedList_lookup(lists + li, elements[tid][e].key);
+     .      .  145:     if (element == NULL) found_corruption("could not lookup inserted element");
+     .      .  146:     if (SortedList_delete(element) == 1)
+     .      .  147:       found_corruption("could not delete element");
+     .      .  148:     unlock_list(li);
+     .      .  149:   }
+     .      .  150: 
+     .      .  151:   return NULL;
+     .      .  152: }
+---
+     .      .  153: 
+     .      .  154: // Gets the name for the csv output based on global vars
+     .      .  155: void get_name(char* name) {
+     .      .  156:   strcpy(name, "list-");
+     .      .  157: 
+ROUTINE ====================== process_list in /w/home.01/cs/ugrad/like/CS111/lab2/b/lab2_list.c
+     1    871 Total samples (flat / cumulative)
+     .      .  114: }
+     .      .  115: 
+     .      .  116: // Processes the lists as specified
+     .      .  117: // Specifically inserts, counts, and removes elements
+     .      .  118: // The sublist used is determined by the above hash function
+---
+     .      .  119: void* process_list(void* t_id) {
+     .      .  120:   int tid = *(int*)t_id;
+     .      .  121:   int li;
+     .      .  122: 
+     .      .  123:   // inserting elements
+     .      .  124:   for (int e = 0; e < iterations; e++) {
+     .      .  125:     li = hash(elements[tid] + e);
+     .    649  126:     lock_list(li);
+     1     14  127:     SortedList_insert(lists + li, (elements[tid]) + e);
+     .      .  128:     unlock_list(li);
+     .      .  129:   }
+     .      .  130: 
+     .      .  131:   // checking length and looking for corruption
+     .      .  132:   for (li = 0; li < nlists; li++){
+     .      3  133:     lock_list(li);
+     .      .  134:     if (SortedList_length(lists + li) < 0)
+     .      .  135:       found_corruption("could not get length");
+     .      .  136:     unlock_list(li);
+     .      .  137:   }
+     .      .  138: 
+     .      .  139:   // looking up and deleting everything that was inserted
+     .      .  140:   for (int e = 0; e < iterations; e++) {
+     .      .  141:     li = hash(elements[tid] + e);
+     .    195  142:     lock_list(li);
+     .      .  143:     SortedListElement_t* element =
+     .     10  144:         SortedList_lookup(lists + li, elements[tid][e].key);
+     .      .  145:     if (element == NULL) found_corruption("could not lookup inserted element");
+     .      .  146:     if (SortedList_delete(element) == 1)
+     .      .  147:       found_corruption("could not delete element");
+     .      .  148:     unlock_list(li);
+     .      .  149:   }
+     .      .  150: 
+     .      .  151:   return NULL;
+     .      .  152: }
+---
+     .      .  153: 
+     .      .  154: // Gets the name for the csv output based on global vars
+     .      .  155: void get_name(char* name) {
+     .      .  156:   strcpy(name, "list-");
+     .      .  157: 

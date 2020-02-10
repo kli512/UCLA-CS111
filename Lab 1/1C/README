@@ -1,0 +1,88 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 1c, a lab to build a simple shell called simpsh
+For part 1c, everything has been implemented
+
+Included files:
+  - lab1.c
+    This is the main solution; C source code that builds the shell
+    program
+
+  - Makefile
+    A makefile that generates the required targets:
+      (default) - Builds the lab1 executable (./simpsh)
+      check - Runs smoke tests (thorough explanation later in this file)
+      clean - Deletes files created by the makefile
+      dist - Creates a tarball for the lab
+
+  - README
+    This file, explaining everything included in the lab distribution
+
+Smoke tests and Methodology:
+  The idea of the smoke tests is to check if the program works as specified.
+  Each smoke test is included as a target in the makefile, and works as follows:
+    - tr
+      Uses the shell to run the tr command using a file with the phrase
+      "I love Eggert and Zhaoxing" as the input and using a file as output
+
+      Verifies the exit code and the contents of the output file
+
+      Expected output:
+        tr test exit code CORRECT
+        tr test output CORRECT
+
+    - rdfail
+      Tells the shell to use a file input.txt.tmp as -rdonly open which should
+      fail as the file doesn't exist (rm -f input.txt.tmp).
+
+      Verifies the exit code and that an error message is printed to stderr
+
+      Expected output:
+        rdfail test exit code CORRECT
+        rdfail test error output CORRECT
+
+    - cmdfail
+      Uses an invalid --command input (doesn't have enough fd indicies) which
+      should fail
+
+      Verifies the exit code and that an error message is printed to stderr
+
+      Expected output:
+        cmdfail test exit code CORRECT
+        cmdfail test error output CORRECT
+
+    - verbose
+      Tests the --verbose flag by using --rdonly --wronly and --command after it
+
+      Verifies exit code and that the number of lines printed to stdout is 3
+      (one for each option)
+
+      Expected output:
+        verbose test exit code CORRECT
+        verbose test output CORRECT
+
+    - flags
+      Tests the file opening flags
+
+      Verifies exit code and the output
+
+      Expected output:
+        flags test exit code CORRECT
+        flags test output CORRECT
+
+    - pipes
+      Tests the --pipe flag
+
+      Verifies exit code and that the pipe succeeded
+
+      Expected output:
+        pipes test exit code CORRECT
+        pipes test output CORRECT
+
+Additional notes:
+  The makefile specifies bash as the shell to test for the smoke tests
+
+  The arbitrary filenames input.txt.tmp, output.txt.tmp, err.txt.tmp, stdout.txt.tmp are used in the check targets
+  They are deleted afterwards, so be warned if you currently use files with that name in the same directory.

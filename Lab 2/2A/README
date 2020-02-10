@@ -1,0 +1,111 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 2A, a lab to study lock implementations
+
+Included files:
+  - lab2_add.c
+    Part 1 of the main solution; C source code that runs
+    synchronization tests using asynchronous addition
+
+  - SortedList.h
+    The given header file for SortedList data structure
+
+  - SortedList.c
+    Implementation of the functions defined in SortedList.h
+
+  - lab2_list.c
+    Part 2 of the main solution; C source code that runs
+    synchronization tests through SortedList operations
+
+  - Makefile
+    A makefile that generates the required targets:
+      build - (default) Builds the lab2 executables (lab2_add and lab2_list)
+      tests - Runs the many required tests to generate the csv data files
+      graphs - Generates png graphs using the given scripts
+      dist - Creates a tarball for the lab
+      clean - Deletes files created by the makefile
+
+  - lab2_add.sh
+    Script that runs numerous tests to investigate synchronization with
+    different number of threads, lock types, and more through asynchronous
+    addition
+
+  - lab2_list.sh
+    Script that runs numerous tests to investigate synchronization with
+    different number of threads, lock types, and more through asynchronous
+    SortedList operations
+
+  - README
+    This file, explaining everything included in the lab distribution
+    and containing answers to the lab questions
+
+Questions:
+  2.1.1)
+    It takes many iterations before errors are seen because with a small
+    of iterations, each thread finishes before the next thread can even
+    begin. With a higher number of iterations, it's likely thread execution
+    time will overlap, and having two threads modify the same variable
+    at the same time can cause conflict and incorrect results.
+
+  2.1.2)
+    when --yield is introduced, the process yields to the kernel each time
+    it adds. Yielding is expensive, as a context switch requires things like
+    saving registers to memory, sleeping, and waking this process.
+
+    It would be extremely difficult to get valid per-operation timings while
+    using --yield. This is because it is very difficult to measure the amount
+    of time it takes to context switch; the kernel handles a lot of it/ much
+    of it is outside the scope of the written code.
+
+  2.1.3)
+    The per-operation cost decreases because the time spent creating and
+    joining threads is being divided among all the iterations.
+
+    We know what the correct cost is when the per-operation thread overhead
+    is reduced to virtually zero; as we increase the number of iterations,
+    this will happen.
+    We will specifically notice it once our per-operation cost becomes
+    stagnant, as this means the overhead has been virtually eliminated
+
+  2.1.4)
+    With a low number of threads, contention for resources (the locks) is
+    very low. Because of this, very little time is wasted on the locks. Thus,
+    the advantages of using faster locks is not as evident, as everything is
+    similarly relatively fast
+
+    As the number of threads rises, contention for the locks grows as more
+    threads are fighting over a single lock. Thus, we are going to start
+    encountering the overhead of trying to acquire an already acquired lock.
+    This will slow the operations down. The unprotected operation will never
+    bother to wait on anyone else as it has no lock, but this means it is
+    highly prone to error
+
+  2.2.1)
+    In part 1, the mutex-protected cost per operation increased as the number
+    of threads increased, but by less than they did in part 2. Part 2 is
+    roughly linear, while part 1 is sublinear.
+
+    It's likely the cause of this is due to the expense of list operations
+    vs how cheap addition is; because list operations take more time, they
+    block for longer and will thus cause more contention, and increase cost
+    per operation
+
+  2.2.2)
+    Both rise approximately linearly, but it is interesting to note that the
+    spin lock appears to be less costly at low thread counts (although it
+    seems to have a higher slope, implying it may eventually overtake mutex)
+
+    This is counterintuitive, as spinlocks are supposed to be very expensive.
+    However, our timing methodology itself is flawed and causing this. Because
+    we are taking only wall time, the mutex appears more expensive because it
+    incurs lots of overhead (context switching/other unknown expenses). However,
+    it also gives up the CPU, allowing the CPU to work on other tasks while
+    the thread waits.
+
+    This waiting time is counted as time spent because we measure wall time
+    instead of CPU time. The spin lock waits the same amount, but with less
+    overhead thus it appears faster. This is because the wall time is faster
+    with a spinlock that does not context switch. However, the CPU time of the
+    spinlock is probably completely abysmal compared to the mutex lock

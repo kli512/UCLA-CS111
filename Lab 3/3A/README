@@ -1,0 +1,19 @@
+NAME: Kevin Li
+EMAIL: li.kevin512@gmail.com
+ID: 123456789
+
+Solution to Lab 3a, a lab on file system interpretation
+
+Included files:
+  - lab3a.c
+    This is the main solution; C source code that builds the
+    file system image investigating executable
+
+  - Makefile
+    A makefile that generates the required targets:
+      (default) - Builds the lab1 executable (./lab3a)
+      clean - Deletes files created by the makefile
+      dist - Creates a tarball for the lab
+
+  - README
+    This file, explaining everything included in the lab distribution
